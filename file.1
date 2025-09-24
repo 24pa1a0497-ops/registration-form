@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f3f4f6; margin: 0; }
+        .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);}
+        .container h2 { text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+            width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;
+        }
+        .entries { max-width: 600px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 10px;}
+        th, td { padding: 8px; border-bottom: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse;}
+        .submit-btn { width: 100%; padding: 10px; background: #26c340; color: #fff; border: none; border-radius: 5px; font-size: 16px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registration Form</h2>
+        <form id="regForm">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name" placeholder="Enter full name"/>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="text" id="email" placeholder="Enter email"/>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password"/>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="dob"/>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="terms"/> <label for="terms" style="display:inline">Accept Terms & Conditions</label>
+            </div>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+    <div class="entries">
+        <h2>Entries</h2>
+        <table id="entriesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>DOB</th>
+                    <th>Accepted Terms?</th>
+                </tr>
+            </thead>
+            <tbody id="entriesBody">
+            </tbody>
+        </table>
+    </div>
 
+<script>
+document.getElementById("regForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    // Get form values
+    var name = document.getElementById("name").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value;
+    var dob = document.getElementById("dob").value;
+    var terms = document.getElementById("terms").checked;
+
+    // 1. All fields check
+    if (!name || !email || !password || !dob || !terms) {
+        alert("Please fill all the fields and accept the terms and conditions!");
+        return;
+    }
+
+    // 2. Email validation
+    if (email.indexOf("@") === -1) {
+        alert("Email must contain '@' symbol!");
+        return;
+    }
+
+    // 3. Password validation
+    var upperCase = /[A-Z]/.test(password);
+    var lowerCase = /[a-z]/.test(password);
+    var number = /\d/.test(password);
+    var symbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!(upperCase && lowerCase && number && symbol)) {
+        alert("Password must include uppercase, lowercase, number, and symbol!");
+        return;
+    }
+
+    // 4. Age validation (18-55 years)
+    var dobDate = new Date(dob);
+    var today = new Date();
+    var age = today.getFullYear() - dobDate.getFullYear();
+    var m = today.getMonth() - dobDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) { age--; }
+    if (age < 18 || age > 55) {
+        alert("Age must be between 18 and 55 years!");
+        return;
+    }
+
+    // 5. Add entry to the table
+    var table = document.getElementById("entriesBody");
+    var row = table.insertRow();
+    row.insertCell(0).textContent = name;
+    row.insertCell(1).textContent = email;
+    row.insertCell(2).textContent = password;
+    row.insertCell(3).textContent = dob;
+    row.insertCell(4).textContent = terms ? "Yes" : "No";
+
+    // Optional: Clear form
+    document.getElementById("regForm").reset();
+});
+</script>
+</body>
+</html>
